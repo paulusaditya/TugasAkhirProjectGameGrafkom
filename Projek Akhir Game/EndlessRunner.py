@@ -34,8 +34,10 @@ active = False
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Block Runner")
-background_img = pygame.image.load('bagus.jpg')
+background_img = pygame.image.load('Projek Akhir Game/bagus.jpg')
 background = pygame.transform.scale(background_img,(WIDTH,HEIGHT))
+player1 = pygame.image.load('Projek Akhir Game/guy.png')
+player1_trans = pygame.transform.scale(player1,(25,25))
 fps = 60
 font = pygame.font.Font("freesansbold.ttf", 16)
 timer = pygame.time.Clock()
@@ -46,10 +48,9 @@ trail_length = 10  # Panjang trail
 trail_color = (255, 255, 0)  # Warna trail (misalnya kuning)
 player_trail = []  # Daftar pemain salinan untuk trail
 
+def display():
+    global i
 
-running = True
-while running:
-    timer.tick(fps)
     screen.fill((0,0,0))
     screen.blit(background, (0, 0))
     screen.blit(background, (i,0))
@@ -59,6 +60,32 @@ while running:
         screen.blit(background, (WIDTH+i, 0))
         i= 0
     i -= 1
+
+def x():
+    global obstacles_speed,score,active
+
+    for i in range (len(obstacles)):
+        if active:
+            obstacles[i] -= obstacles_speed
+            if obstacles[i] < -720:
+                obstacles[i] = random.randint(1100, 1280)
+                score += 1
+
+            if score % 5 == 0:  # Contoh: Tingkatkan setiap 5 poin
+                    obstacles_speed += 0.01  # Atau sesuaikan peningkatan sesuai keinginan
+
+            if player.colliderect(obstacle0) or player.colliderect(obstacle1) or player.colliderect(obstacle2):
+                active = False
+def y():
+    global player_trail,trail_surface,trail_color
+    for i, trail_player in enumerate(player_trail):
+        trail_surface = pygame.Surface((25, 25), pygame.SRCALPHA)
+        pygame.draw.rect(trail_surface, trail_color, (0, 0, 25, 25))
+        screen.blit(trail_surface, trail_player)
+running = True
+while running:
+    timer.tick(fps)
+    display()
 
     if not active : 
         instructions_text = font.render(f'Space Bar to Start', True,black,blue)
@@ -94,19 +121,8 @@ while running:
                 x_change = 0
             if event.key == pygame.K_LEFT:
                 x_change = 0
-
-    for i in range (len(obstacles)):
-        if active:
-            obstacles[i] -= obstacles_speed
-            if obstacles[i] < -720:
-                obstacles[i] = random.randint(1100, 1280)
-                score += 1
-
-            if score % 5 == 0:  # Contoh: Tingkatkan setiap 5 poin
-                    obstacles_speed += 0.01  # Atau sesuaikan peningkatan sesuai keinginan
-
-            if player.colliderect(obstacle0) or player.colliderect(obstacle1) or player.colliderect(obstacle2):
-                active = False
+    x()
+    
 
     if 0 <= player_x <= 1800:
         player_x += x_change
@@ -130,12 +146,9 @@ while running:
         player_trail.pop(0)  # Hapus salinan yang paling tua jika daftar terlalu panjang
 
     # Gambar salinan pemain dengan warna trail
-    for i, trail_player in enumerate(player_trail):
-        trail_surface = pygame.Surface((25, 25), pygame.SRCALPHA)
-        pygame.draw.rect(trail_surface, trail_color, (0, 0, 25, 25))
-        screen.blit(trail_surface, trail_player)
+    y()
 
     
-    # pygame.display.flip()
     pygame.display.update()
+    # pygame.display.flip()
 pygame.quit()

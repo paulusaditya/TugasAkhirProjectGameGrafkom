@@ -5,7 +5,7 @@ pygame.init()
 # win_width = 1000
 # win_height = 500
 win = pygame.display.set_mode ((1000, 500))
-bg_img = pygame.image.load('bagus.jpg')
+bg_img = pygame.image.load('Projek Akhir Game/bagus.jpg')
 background= pygame.transform.scale(bg_img, (1000,500))
 
 width = 1000
