@@ -23,33 +23,36 @@ nilai = 0
 gravity = 1
 active = 0
 background_x = 0
+music = pygame.mixer.music.load('Projek Akhir Game/Music/Sky Jump.mp3')
+sound_died = pygame.mixer.Sound('Projek Akhir Game/Music/Dead.mp3')
+sound_jump = pygame.mixer.Sound('Projek Akhir Game/Music/Jump.mp3')
 
 
 screen = pygame.display.set_mode((1280,720))
 pygame.display.set_caption('EndlessRunner')
 clock = pygame.time.Clock()
-test_font = pygame.font.Font('Fonts/Natural Precision.ttf', 50)
+test_font = pygame.font.Font('Projek Akhir Game/Fonts/Natural Precision.ttf', 50)
 
-sky_surface = pygame.image.load('bagus.jpg').convert()
-spike_surface = pygame.image.load('Idle1.png').convert_alpha()
+sky_surface = pygame.image.load('Projek Akhir Game/img/bagus.jpg').convert()
+spike_surface = pygame.image.load('Projek Akhir Game/Idle1.png').convert_alpha()
 spike_surface = pygame.transform.scale(spike_surface, (90, 45))
-spike_surface1 = pygame.image.load('Spikedball.png').convert_alpha()
+spike_surface1 = pygame.image.load('Projek Akhir Game/Spikedball.png').convert_alpha()
 spike_surface1 = pygame.transform.scale(spike_surface1, (50, 50))
 
 obstacle_rect_list = []
 
-player_surface0 = pygame.image.load('Run_01.png').convert_alpha()
-player_surface1 = pygame.image.load('Run_02.png').convert_alpha()
-player_surface2 = pygame.image.load('Run_03.png').convert_alpha()
-player_surface3 = pygame.image.load('Run_04.png').convert_alpha()
-player_surface4 = pygame.image.load('Run_05.png').convert_alpha()
-player_surface5 = pygame.image.load('Run_06.png').convert_alpha()
-player_surface6 = pygame.image.load('Run_07.png').convert_alpha()
-player_surface7 = pygame.image.load('Run_08.png').convert_alpha()
-player_surface8 = pygame.image.load('Run_09.png').convert_alpha()
-player_surface9 = pygame.image.load('Run_10.png').convert_alpha()
-player_surface10 = pygame.image.load('Run_11.png').convert_alpha()
-player_surface11 = pygame.image.load('Run_12.png').convert_alpha()
+player_surface0 = pygame.image.load('Projek Akhir Game/Character/Run_01.png').convert_alpha()
+player_surface1 = pygame.image.load('Projek Akhir Game/Character/Run_02.png').convert_alpha()
+player_surface2 = pygame.image.load('Projek Akhir Game/Character/Run_03.png').convert_alpha()
+player_surface3 = pygame.image.load('Projek Akhir Game/Character/Run_04.png').convert_alpha()
+player_surface4 = pygame.image.load('Projek Akhir Game/Character/Run_05.png').convert_alpha()
+player_surface5 = pygame.image.load('Projek Akhir Game/Character/Run_06.png').convert_alpha()
+player_surface6 = pygame.image.load('Projek Akhir Game/Character/Run_07.png').convert_alpha()
+player_surface7 = pygame.image.load('Projek Akhir Game/Character/Run_08.png').convert_alpha()
+player_surface8 = pygame.image.load('Projek Akhir Game/Character/Run_09.png').convert_alpha()
+player_surface9 = pygame.image.load('Projek Akhir Game/Character/Run_10.png').convert_alpha()
+player_surface10 = pygame.image.load('Projek Akhir Game/Character/Run_11.png').convert_alpha()
+player_surface11 = pygame.image.load('Projek Akhir Game/Character/Run_12.png').convert_alpha()
 
 player_surface0 = pygame.transform.scale(player_surface0, (100, 100))
 player_surface1 = pygame.transform.scale(player_surface1, (100, 100))
@@ -66,14 +69,14 @@ player_surface11 = pygame.transform.scale(player_surface11, (100, 100))
 
 player_surf_walk = [player_surface0,player_surface1,player_surface2,player_surface3,player_surface4,player_surface5,player_surface6,player_surface7,player_surface8,player_surface9,player_surface10,player_surface11]
 player_index = 0
-player_jump = pygame.image.load('Jump.png').convert_alpha()
+player_jump = pygame.image.load('Projek Akhir Game/Jump.png').convert_alpha()
 player_jump = pygame.transform.scale(player_jump, (100,100))
 
 player_surf = player_surf_walk[player_index]
 player_rect = player_surf.get_rect(topleft=(50,480))
 player_gravity = 0
 
-player_stand = pygame.image.load('Run_07.png').convert_alpha()
+player_stand = pygame.image.load('Projek Akhir Game/Character/Run_07.png').convert_alpha()
 player_stand = pygame.transform.scale(player_stand,(300,300))
 player_stand_rect = player_stand.get_rect(center = (640,360))
 
@@ -109,6 +112,8 @@ def collisions(player,obstacles):
     if obstacles:
         for obs in obstacles:
             if player.colliderect(obs):
+                pygame.mixer.music.stop()
+                sound_died.play()
                 return 0
     return 1 
 
@@ -155,6 +160,9 @@ while True:
         obstacle_rect_list = obs_movement(obstacle_rect_list)
         nilai = display_score()
         active = collisions(player_rect,obstacle_rect_list)
+        if pygame.key.get_pressed()[pygame.K_SPACE]:
+            sound_jump.play()
+            sound_jump.set_volume(0.1)
     
     if active == 0:
         screen.blit(player_stand,player_stand_rect)
@@ -164,6 +172,7 @@ while True:
         gravity = 0
         score_massage = test_font.render(f'Your score: {nilai}',False,white)
         score_massage_rect = score_massage.get_rect(center = (640,550))
+        pygame.mixer.music.play(-1)
         if nilai == 0:
             screen.blit(massage,massage_rect)
         else:
