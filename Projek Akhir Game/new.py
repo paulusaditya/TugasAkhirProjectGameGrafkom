@@ -18,6 +18,7 @@ WIDTH = 1280
 HEIGHT = 720 
 i = 0
 
+paused = False
 score = 0
 nilai = 0
 gravity = 1
@@ -86,6 +87,10 @@ game_rect = game_name.get_rect(center = (640,180))
 massage = test_font.render('Press SPACE to start', False,white)
 massage_rect = massage.get_rect(center = (640,550))
 
+pause_message = test_font.render('Press P to Resume', False, white)
+pause_rect = pause_message.get_rect(center=(640, 620))
+
+
 obstacle_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_timer,1500)
 
@@ -132,17 +137,19 @@ while True:
             pygame.quit()
             exit()
         if active == 1:
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
                     player_gravity = -20
-        if active == 0:
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                    active = 1
-                    score = int(pygame.time.get_ticks()/1000)
-        if event.type == obstacle_timer and active == 1: 
-            if randint(0,2):
-                obstacle_rect_list.append(spike_surface.get_rect(topleft=(randint(1200,1500),590)))
+                elif event.key == pygame.K_p:
+                    paused = not paused
+        if active == 0 and event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            active = 1
+            score = int(pygame.time.get_ticks()/1000)
+        if event.type == obstacle_timer and active == 1:
+            if randint(0, 2):
+                obstacle_rect_list.append(spike_surface.get_rect(topleft=(randint(1200, 1500), 590)))
             else:
-                obstacle_rect_list.append(spike_surface1.get_rect(topleft=(randint(1200,1500),400)))
+                obstacle_rect_list.append(spike_surface1.get_rect(topleft=(randint(1200, 1500), 400)))
 
     screen.blit(sky_surface, (background_x, 0))
     screen.blit(sky_surface, (background_x + WIDTH, 0))
@@ -150,34 +157,38 @@ while True:
     background_x -= 5
     if background_x <= -WIDTH:
         background_x = 0
-    
-    if active == 1:
-        player_anim()
-        screen.blit(player_surf,player_rect)
-        player_gravity +=1
-        player_rect.y += player_gravity
-        if player_rect.bottom >= 630: player_rect.bottom = 630
-        obstacle_rect_list = obs_movement(obstacle_rect_list)
-        nilai = display_score()
-        active = collisions(player_rect,obstacle_rect_list)
-        if pygame.key.get_pressed()[pygame.K_SPACE]:
-            sound_jump.play()
-            sound_jump.set_volume(0.1)
-    
-    if active == 0:
-        screen.blit(player_stand,player_stand_rect)
-        screen.blit(game_name,game_rect)
-        obstacle_rect_list.clear()
-        player_rect.topleft=(50,480)
-        gravity = 0
-        score_massage = test_font.render(f'Your score: {nilai}',False,white)
-        score_massage_rect = score_massage.get_rect(center = (640,550))
-        pygame.mixer.music.play(-1)
-        if nilai == 0:
-            screen.blit(massage,massage_rect)
-        else:
-            screen.blit(score_massage,score_massage_rect) 
-        
-    # currentframe = (currentframe + 1) % frame
+
+    if not paused:
+        if active == 1:
+            player_anim()
+            screen.blit(player_surf, player_rect)
+            player_gravity += 1
+            player_rect.y += player_gravity
+            if player_rect.bottom >= 630:
+                player_rect.bottom = 630
+            obstacle_rect_list = obs_movement(obstacle_rect_list)
+            nilai = display_score()
+            active = collisions(player_rect, obstacle_rect_list)
+            if pygame.key.get_pressed()[pygame.K_SPACE]:
+                sound_jump.play()
+                sound_jump.set_volume(0.1)
+
+        if active == 0:
+            screen.blit(player_stand, player_stand_rect)
+            screen.blit(game_name, game_rect)
+            obstacle_rect_list.clear()
+            player_rect.topleft = (50, 480)
+            gravity = 0
+            score_massage = test_font.render(f'Your score: {nilai}', False, white)
+            score_massage_rect = score_massage.get_rect(center=(640, 550))
+            pygame.mixer.music.play(-1)
+            if nilai == 0:
+                screen.blit(massage, massage_rect)
+            else:
+                screen.blit(score_massage, score_massage_rect)
+
+    if paused:
+        screen.blit(pause_message, pause_rect)
+
     pygame.display.update()
     clock.tick(60)
