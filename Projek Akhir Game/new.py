@@ -27,6 +27,9 @@ background_x = 0
 music = pygame.mixer.music.load('Projek Akhir Game/Music/Sky Jump.mp3')
 sound_died = pygame.mixer.Sound('Projek Akhir Game/Music/Dead.mp3')
 sound_jump = pygame.mixer.Sound('Projek Akhir Game/Music/Jump.mp3')
+MAX_JUMPS = 2
+jump_count = 0
+
 
 
 screen = pygame.display.set_mode((1280,720))
@@ -138,18 +141,21 @@ while True:
             exit()
         if active == 1:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    player_gravity = -20
+                if event.key == pygame.K_SPACE and jump_count < MAX_JUMPS:
+                    player_gravity = -18
+                    jump_count += 1
                 elif event.key == pygame.K_p:
                     paused = not paused
         if active == 0 and event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             active = 1
-            score = int(pygame.time.get_ticks()/1000)
+            score = int(pygame.time.get_ticks() / 1000)
+            jump_count = 0
         if event.type == obstacle_timer and active == 1:
             if randint(0, 2):
                 obstacle_rect_list.append(spike_surface.get_rect(topleft=(randint(1200, 1500), 590)))
             else:
-                obstacle_rect_list.append(spike_surface1.get_rect(topleft=(randint(1200, 1500), 400)))
+                obstacle_rect_list.append(spike_surface1.get_rect(topleft=(randint(1200, 1500), 480)))
+
 
     screen.blit(sky_surface, (background_x, 0))
     screen.blit(sky_surface, (background_x + WIDTH, 0))
@@ -166,6 +172,7 @@ while True:
             player_rect.y += player_gravity
             if player_rect.bottom >= 630:
                 player_rect.bottom = 630
+                jump_count = 0
             obstacle_rect_list = obs_movement(obstacle_rect_list)
             nilai = display_score()
             active = collisions(player_rect, obstacle_rect_list)
