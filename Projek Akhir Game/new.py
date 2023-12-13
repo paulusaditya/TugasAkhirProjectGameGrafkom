@@ -157,14 +157,20 @@ while True:
                 obstacle_rect_list.append(spike_surface1.get_rect(topleft=(randint(1200, 1500), 480)))
 
 
-    screen.blit(sky_surface, (background_x, 0))
-    screen.blit(sky_surface, (background_x + WIDTH, 0))
+    # screen.blit(sky_surface, (background_x, 0))
+    # screen.blit(sky_surface, (background_x + WIDTH, 0))
 
-    background_x -= 5
-    if background_x <= -WIDTH:
-        background_x = 0
+    # background_x -= 5
+    # if background_x <= -WIDTH:
+    #     background_x = 0
 
     if not paused:
+        screen.blit(sky_surface, (background_x, 0))
+        screen.blit(sky_surface, (background_x + WIDTH, 0))
+
+        background_x -= 5
+        if background_x <= -WIDTH:
+            background_x = 0
         if active == 1:
             player_anim()
             screen.blit(player_surf, player_rect)
@@ -179,6 +185,7 @@ while True:
             if pygame.key.get_pressed()[pygame.K_SPACE]:
                 sound_jump.play()
                 sound_jump.set_volume(0.1)
+
 
         if active == 0:
             screen.blit(player_stand, player_stand_rect)
