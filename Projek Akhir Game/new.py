@@ -27,7 +27,7 @@ background_x = 0
 music = pygame.mixer.music.load('Projek Akhir Game/Music/Sky Jump.mp3')
 sound_died = pygame.mixer.Sound('Projek Akhir Game/Music/Dead.mp3')
 sound_jump = pygame.mixer.Sound('Projek Akhir Game/Music/Jump.mp3')
-MAX_JUMPS = 2
+MAX_JUMPS = 1
 jump_count = 0
 
 
